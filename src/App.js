@@ -1,8 +1,8 @@
-import Start from './views/start'
+import Light from './views/light'
 
 function App() {
 
-  return <Start />
+  return <Light />
 }
 
 export default App;
