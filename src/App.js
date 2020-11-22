@@ -1,8 +1,8 @@
-import Light from './views/light'
+import Shadow from './views/shadow'
 
 function App() {
 
-  return <Light />
+  return <Shadow />
 }
 
 export default App;
