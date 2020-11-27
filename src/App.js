@@ -1,8 +1,8 @@
-import Shadow from './views/shadow'
+import Rect from './views/rect'
 
 function App() {
 
-  return <Shadow />
+  return <Rect />
 }
 
 export default App;
