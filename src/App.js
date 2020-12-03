@@ -1,8 +1,8 @@
-import Rect from './views/rect'
+import Loader from './views/loader'
 
 function App() {
 
-  return <Rect />
+  return <Loader />
 }
 
 export default App;
