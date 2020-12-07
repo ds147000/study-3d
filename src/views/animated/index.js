@@ -3,6 +3,7 @@
  */
 import * as THREE from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Progress } from 'antd'
 import 'antd/dist/antd.css'
@@ -18,7 +19,7 @@ const Page = () => {
     const Meshs = useRef([]).current
     const Lights = useRef([]).current
     const IsDown = useRef(false)
-    const PI = useRef(100)
+    const PI = useRef(20)
     const R = useRef(90)
     const id = useRef(null)
     const Clock = useRef(new THREE.Clock())
@@ -39,6 +40,25 @@ const Page = () => {
             animated.setLoop(true)
             animated.play()
             Scene.add(obj)
+        })
+    }, [])
+
+    const loaderGltf = useCallback(() => {
+        const manager = new THREE.LoadingManager()
+        manager.onLoad = () => setLoaded(100)
+        manager.onStart = (_, loaded, total) => setLoaded(loaded / total)
+        manager.onProgress = (_, loaded, total) => setLoaded(loaded / total)
+        const loader = new GLTFLoader(manager) 
+        loader.setPath('/static/obj/')
+        loader.load('i10.gltf', (obj) => {
+            console.log(obj)
+            // obj.position.set(0, 0, 0)
+            // obj.scale.set(0.1, 0.1, 0.1)
+            Mixer.current = new THREE.AnimationMixer(obj.scene)
+            const animated = Mixer.current.clipAction(obj.animations[0])
+            animated.setLoop(true)
+            animated.play()
+            Scene.add(obj.scene)
         })
     }, [])
 
@@ -137,7 +157,7 @@ const Page = () => {
         init()
         createLight()
         createFloor()
-        loaderFbx()
+        loaderGltf()
         renderScene()
         document.addEventListener('resize', setView)
         // 销毁钩子
