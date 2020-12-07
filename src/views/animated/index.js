@@ -21,6 +21,8 @@ const Page = () => {
     const PI = useRef(100)
     const R = useRef(90)
     const id = useRef(null)
+    const Clock = useRef(new THREE.Clock())
+    const Mixer = useRef()
 
     const loaderFbx = useCallback(() => {
         const manager = new THREE.LoadingManager()
@@ -29,10 +31,13 @@ const Page = () => {
         manager.onProgress = (_, loaded, total) => setLoaded(loaded / total)
         const loader = new FBXLoader(manager) 
         loader.setPath('/static/obj/')
-        loader.load('gtx.fbx', (obj) => {
+        loader.load('gtx2.fbx', (obj) => {
             obj.position.set(0, 0, 0)
-            
             obj.scale.set(0.1, 0.1, 0.1)
+            Mixer.current = new THREE.AnimationMixer(obj)
+            const animated = Mixer.current.clipAction(obj.animations[0])
+            animated.setLoop(true)
+            animated.play()
             Scene.add(obj)
         })
     }, [])
@@ -116,6 +121,8 @@ const Page = () => {
     // 渲染画面
     const renderScene = useCallback(() => {
         Render.render(Scene, Camera)
+        const time = Clock.current.getDelta()
+        if (Mixer.current) Mixer.current.update(time)
         id.current = window.requestAnimationFrame(() => renderScene())
     }, [Render, Meshs])
 
